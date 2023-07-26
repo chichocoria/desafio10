@@ -1,0 +1,22 @@
+version: "3"
+services:
+  app:
+    image: chichocoria/app_desafio9:1.0.0
+    links:
+      - db
+    ports:
+      - "4000:4000"
+    ##volumen creado para modificar index.html
+    volumes:
+      - ./app/templates:/app/templates
+    restart: always
+  db:
+    image: mariadb:10.6
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+    ##Creamos un volumen para que sean persistentes los datos de la db
+      - ./data:/var/lib/mysql
