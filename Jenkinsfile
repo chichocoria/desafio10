@@ -11,8 +11,10 @@ pipeline {
         }
 
         stage('Build docker image') {
-            steps {  
-                sh 'docker build -t chichocoria/app_desafio9:latest/app .'
+            steps {
+              dir('app'){  
+                sh 'docker build -t chichocoria/app_desafio9:latest .'
+              }
             }
         }
         stage('login to dockerhub') {
