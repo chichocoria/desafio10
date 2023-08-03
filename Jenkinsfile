@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'docker build -t chichocoria/app_desafio10/app/'.
+        sh 'docker build -t chichocoria/app_desafio10/app/'
       }
     }
     stage('Login') {
