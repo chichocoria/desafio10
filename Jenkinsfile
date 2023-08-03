@@ -1,36 +1,35 @@
 pipeline {
-    agent any 
     environment {
-    DOCKERHUB_CREDENTIALS = credentials('chichocoria')
+        IMAGEN = "chichocoria/app_desafio9"
+        USUARIO = 'chichocoria'
     }
-    stages { 
-        stage('SCM Checkout') {
-            steps{
-            git 'https://github.com/chichocoria/desafio10.git'
-            }
-        }
-
-        stage('Build docker image') {
+    agent any
+    stages {
+        stage('Clone') {
             steps {
-              dir('app'){  
-                sh 'docker build -t chichocoria/app_desafio9:latest .'
-              }
+                git branch: "main", url: 'https://github.com/chichocoria/desafio10.git'
             }
         }
-        stage('login to dockerhub') {
-            steps{
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        stage('Build') {
+            steps {
+                script {
+                    newApp = docker.build "$IMAGEN:$BUILD_NUMBER"
+                }
+            }
+        }     
+        stage('Deploy') {
+            steps {
+                script {
+                    docker.withRegistry( '', USUARIO ) {
+                        newApp.push()
+                    }
+                }
             }
         }
-        stage('push image') {
-            steps{
-                sh 'docker push chichocoria/app_desafio9:latest'
-            }
-        }
-}
-post {
-        always {
-            sh 'docker logout'
+        stage('Clean Up') {
+            steps {
+                sh "docker rmi $IMAGEN:$BUILD_NUMBER"
+                }
         }
     }
 }
