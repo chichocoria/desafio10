@@ -13,7 +13,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    newApp = docker.build "$IMAGEN:$BUILD_NUMBER"
+                    newApp = docker.build "chichocoria/app_desafio9/app:$BUILD_NUMBER"
                 }
             }
         }     
