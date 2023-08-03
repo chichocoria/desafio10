@@ -1,7 +1,7 @@
 pipeline {
     environment {
         IMAGEN = "chichocoria/app_desafio9"
-        USUARIO = 'chichocoria'
+        USUARIO = "chichocoria"
     }
     agent any
     stages {
