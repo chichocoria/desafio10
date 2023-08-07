@@ -8,6 +8,7 @@ pipeline {
   stages {
     stage('Cloning Git') {
       steps {
+        sh "pwd"
         git branch: "main", url: 'https://github.com/chichocoria/desafio10.git'
       }
     }
@@ -18,7 +19,18 @@ pipeline {
         }
       }
     }
-        stage('Deploy Image') {
+    stage('Run docker-compose') {
+        steps{
+        sh "docker-compose up -d"
+        sh "sleep 180"
+      }
+    }
+    stage('Test URL') {
+        steps{
+        sh "curl localhost:4000"
+      }
+    }
+    stage('Deploy Image') {
       steps{
         script {
           docker.withRegistry( '', registryCredential ) {
@@ -29,6 +41,7 @@ pipeline {
     }
     stage('Remove Unused docker image') {
       steps{
+        sh "docker-compose down"  
         sh "docker rmi $registry:$BUILD_NUMBER"
       }
     }
